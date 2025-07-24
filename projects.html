@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyectos | Enrique Tristán</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+
+    .links a {
+      color: #1abc9c;
+      text-decoration: none;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    .projects-container {
+      max-width: 1000px;
+      margin: 3rem auto;
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      padding: 0 1rem;
+    }
+
+    .project-card {
+      background-color: #fff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .project-card h3 {
+      margin-bottom: 1rem;
+    }
+
+    .project-card p {
+      margin-bottom: 1.5rem;
+    }
+
+    .snake-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 2rem 0;
+    }
+
+    canvas {
+      background-color: #000;
+      border: 2px solid #1abc9c;
+    }
+
+    #startButton {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #1abc9c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #startButton:hover {
+      background-color: #16a085;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <h1>Enrique Tristán</h1>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="about.html">Sobre mí</a></li>
+        <li><a href="projects.html">Proyectos</a></li>
+        <li><a href="contact.html">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Mis Proyectos</h2>
+      <p>Explora algunos de los proyectos que he desarrollado. también puedes ver más a fondo en mi GitHub (pestaña de Contacto)</p>
+    </section>
+
+    <div class="projects-container">
+      <div class="project-card">
+        <h3>Portafolio personal</h3>
+        <p>Sitio web personal donde muestro mis habilidades, formación, proyectos y formas de contacto.</p>
+        <a href="https://xemodd.github.io/portafolio-enrique/index.html" target="_blank">Portafolio Personal</a>
+      </div>
+
+      <div class="project-card">
+        <h3>App para calculo de material</h3>
+        <p>Una app para android, para calcular asas, bies y lona, la realicé porque era de utilidad en mi anterior trabajo ya que calculaba la materia prima necesaria para los distintos pedidos</p>
+        <a href="https://xemodd.github.io/portafolio-enrique/index.html" target="_blank">Calculadora Colibrí</a>
+      </div>
+
+      <div class="project-card">
+        <h3>To-Do List</h3>
+        <p>Agrega, marca como completada o elimina tareas fácilmente. ¡Mantén todo organizado y no olvides nada!</p>
+        <a href="https://xemodd.github.io/mi-lista/" target="_blank">Lista de actividades</a>
+      </div>
+    </div>
+
+    <section class="snake-container">
+      <h2>Juego Snake</h2>
+      <p>Solo para PC, juega con ↑, ↓, →, ←</p>
+      <button id="startButton">Iniciar Juego</button>
+      <br>
+      <canvas id="gameCanvas" width="400" height="400"></canvas>
+      <br>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Enrique Tristán. Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const startButton = document.getElementById("startButton");
+
+    const box = 20;
+    let snake;
+    let direction;
+    let food;
+    let game;
+
+    document.addEventListener("keydown", function(event) {
+      event.preventDefault();
+      changeDirection(event);
+    });
+
+    startButton.addEventListener("click", () => {
+      snake = [{ x: 9 * box, y: 10 * box }];
+      direction = "RIGHT";
+      food = {
+        x: Math.floor(Math.random() * 19 + 1) * box,
+        y: Math.floor(Math.random() * 19 + 1) * box,
+      };
+      if (game) clearInterval(game);
+      game = setInterval(draw, 100);
+    });
+
+    function changeDirection(event) {
+      if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+      else if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+      else if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+      else if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+    }
+
+    function draw() {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? "lime" : "lime";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+      }
+
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x, food.y, box, box);
+
+      let headX = snake[0].x;
+      let headY = snake[0].y;
+
+      if (direction === "LEFT") headX -= box;
+      if (direction === "UP") headY -= box;
+      if (direction === "RIGHT") headX += box;
+      if (direction === "DOWN") headY += box;
+
+      if (headX === food.x && headY === food.y) {
+        food = {
+          x: Math.floor(Math.random() * 19 + 1) * box,
+          y: Math.floor(Math.random() * 19 + 1) * box,
+        };
+      } else {
+        snake.pop();
+      }
+
+      const newHead = { x: headX, y: headY };
+
+      if (
+        headX < 0 || headY < 0 || headX >= canvas.width || headY >= canvas.height ||
+        snake.some(segment => segment.x === headX && segment.y === headY)
+      ) {
+        clearInterval(game);
+        alert("¡Perdiste!");
+        return;
+      }
+
+      snake.unshift(newHead);
+    }
+  </script>
+</body>
+</html>
